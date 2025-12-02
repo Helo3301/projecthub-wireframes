@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kanban Board - Project Manager</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .kanban-wrapper {
+      height: calc(100vh - 140px);
+      overflow-x: auto;
+      padding: 24px;
+    }
+    .column-add-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 300px;
+      height: 100px;
+      border: 2px dashed var(--gray-300);
+      border-radius: 12px;
+      color: var(--gray-400);
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .column-add-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .kanban-card-add {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      border: 2px dashed var(--gray-300);
+      border-radius: 8px;
+      color: var(--gray-400);
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .kanban-card-add:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .swimlane-header {
+      padding: 12px 0;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--gray-200);
+    }
+    .swimlane-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--gray-600);
+    }
+    .wip-limit {
+      background: var(--danger);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      margin-left: 8px;
+    }
+    .kanban-card-checklist {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+    .progress-mini {
+      width: 40px;
+      height: 4px;
+      background: var(--gray-200);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-mini-fill {
+      height: 100%;
+      background: var(--success);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <h1>Project<span>Hub</span></h1>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Main</div>
+        <ul class="sidebar-nav">
+          <li><a href="index.html"><span class="icon">&#9632;</span> Dashboard</a></li>
+          <li><a href="#"><span class="icon">&#9733;</span> My Tasks</a></li>
+          <li><a href="calendar.html"><span class="icon">&#128197;</span> Calendar</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Projects</div>
+        <ul class="sidebar-nav">
+          <li><a href="#" class="active"><span class="icon">&#128193;</span> Website Redesign</a></li>
+          <li><a href="#"><span class="icon">&#128193;</span> Mobile App</a></li>
+          <li><a href="#"><span class="icon">&#128193;</span> Marketing Q4</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="top-header">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <h1 class="page-title">Website Redesign</h1>
+          <div class="view-tabs">
+            <button class="view-tab">List</button>
+            <button class="view-tab active">Board</button>
+            <button class="view-tab">Gantt</button>
+            <button class="view-tab">Calendar</button>
+          </div>
+        </div>
+        <div class="header-actions">
+          <select style="padding: 8px 12px; border: 1px solid var(--gray-300); border-radius: 6px; font-size: 0.85rem;">
+            <option>Group by: Status</option>
+            <option>Group by: Assignee</option>
+            <option>Group by: Priority</option>
+            <option>Group by: Sprint</option>
+          </select>
+          <button class="btn btn-secondary">Filter</button>
+          <button class="btn btn-primary">+ Add Task</button>
+        </div>
+      </header>
+
+      <div class="kanban-wrapper">
+        <div class="kanban-board">
+          <!-- Backlog Column -->
+          <div class="kanban-column">
+            <div class="kanban-column-header">
+              <div style="display: flex; align-items: center;">
+                <span class="kanban-column-title">Backlog</span>
+                <span class="kanban-column-count">8</span>
+              </div>
+              <button style="background: none; border: none; cursor: pointer; color: var(--gray-400);">...</button>
+            </div>
+
+            <div class="kanban-card">
+              <div class="kanban-card-title">Implement dark mode toggle</div>
+              <div style="font-size: 0.8rem; color: var(--gray-500); margin-bottom: 8px;">Add theme switching functionality to settings</div>
+              <div class="kanban-card-tags">
+                <span class="tag" style="background: #DBEAFE; color: var(--primary);">Feature</span>
+              </div>
+              <div class="kanban-card-footer">
+                <span class="task-priority priority-medium">Medium</span>
+                <div class="avatar" style="width: 24px; height: 24px; font-size: 0.65rem;">SK</div>
+              </div>
+            </div>
+
+            <div class="kanban-card">
+              <div class="kanban-card-title">Mobile navigation improvements</div>
+              <div class="kanban-card-tags">
+                <span class="tag" style="background: #FEF3C7; color: #92400E;">UX</span>
+              </div>
+              <div class="kanban-card-footer">
+                <span class="task-priority priority-low">Low</span>
+                <div class="avatar" style="width: 24px; height: 24px; font-size: 0.65rem;">JD</div>
+              </div>
+            </div>
+
+            <div class="kanban-card-add">+ Add Task</div>
+          </div>
+
+          <!-- To Do Column -->
+          <div class="kanban-column">
+            <div class="kanban-column-header">
+              <div style="display: flex; align-items: center;">
+                <span class="kanban-column-title">To Do</span>
+                <span class="kanban-column-count">4</span>
+              </div>
+              <button style="background: none; border: none; cursor: pointer; color: var(--gray-400);">...</button>
+            </div>
+
+            <div class="kanban-card">
+              <div class="kanban-card-title">Review homepage wireframes</div>
+              <div class="kanban-card-checklist">
+                <div class="progress-mini"><div class="progress-mini-fill" style="width: 60%;"></div></div>
+                3/5 subtasks
+              </div>
+              <div class="kanban-card-tags">
+                <span class="tag" style="background: #D1FAE5; color: #065F46;">Design</span>
+              </div>
+              <div class="kanban-card-footer">
+                <span class="task-priority priority-high">High</span>
+                <div class="avatar" style="width: 24px; height: 24px; font-size: 0.65rem;">SK</div>
+              </div>
+            </div>
+
+            <div class="kanban-card">
+              <div class="kanban-card-title">Update API documentation</div>
+              <div style="font-size: 0.75rem; color: var(--gray-500); margin: 4px 0;">Due: Dec 2</div>
+              <div class="kanban-card-tags">
+                <span class="tag" style="background: #E0E7FF; color: #4338CA;">Docs</span>
+              </div>
+              <div class="kanban-card-footer">
+                <span class="task-priority priority-medium">Medium</span>
+                <div class="avatar" style="width: 24px; height: 24px; font-size: 0.65rem;">AM</div>
+              </div>
+            </div>
+
+            <div class="kanban-card-add">+ Add Task</div>
+          </div>
+
+          <!-- In Progress Column -->
+          <div class="kanban-column" style="background: #FEF3C7;">
+            <div class="kanban-column-header">
+              <div style="display: flex; align-items: center;">
+                <span class="kanban-column-title">In Progress</span>
+                <span class="kanban-column-count" style="background: var(--warning);">3</span>
+                <span class="wip-limit">WIP: 3</span>
+              </div>
+              <button style="background: none; border: none; cursor: pointer; color: var(--gray-400);">...</button>
+            </div>
+
+            <div class="kanban-card" style="border-left: 3px solid var(--warning);">
+              <div class="kanban-card-title">UI Design - Hero Section</div>
+              <div style="font-size: 0.8rem; color: var(--gray-500); margin-bottom: 8px;">Create high-fidelity mockups for the landing page hero</div>
+              <div class="kanban-card-checklist">
+                <div class="progress-mini"><div class="progress-mini-fill" style="width: 50%;"></div></div>
+                2/4 subtasks
+              </div>
+              <div class="kanban-card-tags">
+                <span class="tag" style="background: #D1FAE5; color: #065F46;">Design</span>
+                <span class="tag" style="background: #FEE2E2; color: var(--danger);">Blocked</span>
+              </div>
+              <div class="kanban-card-footer">
+                <span class="task-priority priority-high">High</span>
+                <div style="display: flex;">
+                  <div class="avatar" style="width: 24px; height: 24px; font-size: 0.65rem; margin-left: -8px;">SK</div>
+                  <div class="avatar" style="width: 24px; height: 24px; font-size: 0.65rem; margin-left: -8px; background: var(--success);">JD</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kanban-card" style="border-left: 3px solid var(--warning);">
+              <div class="kanban-card-title">Component library setup</div>
+              <div class="kanban-card-tags">
+                <span class="tag" style="background: #DBEAFE; color: var(--primary);">Dev</span>
+              </div>
+              <div class="kanban-card-footer">
+                <span class="task-priority priority-medium">Medium</span>
+                <div class="avatar" style="width: 24px; height: 24px; font-size: 0.65rem;">JD</div>
+              </div>
+            </div>
+
+            <div class="kanban-card" style="border-left: 3px solid var(--warning);">
+              <div class="kanban-card-title">Competitor analysis report</div>
+              <div class="kanban-card-tags">
+                <span class="tag" style="background: #E0E7FF; color: #4338CA;">Research</span>
+              </div>
+              <div class="kanban-card-footer">
+                <span class="task-priority priority-low">Low</span>
+                <div class="avatar" style="width: 24px; height: 24px; font-size: 0.65rem;">AM</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review Column -->
+          <div class="kanban-column">
+            <div class="kanban-column-header">
+              <div style="display: flex; align-items: center;">
+                <span class="kanban-column-title">Review</span>
+                <span class="kanban-column-count">2</span>
+              </div>
+              <button style="background: none; border: none; cursor: pointer; color: var(--gray-400);">...</button>
+            </div>
+
+            <div class="kanban-card">
+              <div class="kanban-card-title">User research findings</div>
+              <div style="font-size: 0.75rem; color: var(--success); margin: 4px 0;">Ready for approval</div>
+              <div class="kanban-card-tags">
+                <span class="tag" style="background: #E0E7FF; color: #4338CA;">Research</span>
+              </div>
+              <div class="kanban-card-footer">
+                <span class="task-priority priority-high">High</span>
+                <div class="avatar" style="width: 24px; height: 24px; font-size: 0.65rem;">SK</div>
+              </div>
+            </div>
+
+            <div class="kanban-card-add">+ Add Task</div>
+          </div>
+
+          <!-- Done Column -->
+          <div class="kanban-column" style="background: #D1FAE5;">
+            <div class="kanban-column-header">
+              <div style="display: flex; align-items: center;">
+                <span class="kanban-column-title">Done</span>
+                <span class="kanban-column-count" style="background: var(--success);">12</span>
+              </div>
+              <button style="background: none; border: none; cursor: pointer; color: var(--gray-400);">...</button>
+            </div>
+
+            <div class="kanban-card" style="opacity: 0.7;">
+              <div class="kanban-card-title" style="text-decoration: line-through;">Initial wireframes</div>
+              <div class="kanban-card-footer">
+                <span style="font-size: 0.75rem; color: var(--gray-400);">Completed Nov 28</span>
+                <div class="avatar" style="width: 24px; height: 24px; font-size: 0.65rem;">SK</div>
+              </div>
+            </div>
+
+            <div class="kanban-card" style="opacity: 0.7;">
+              <div class="kanban-card-title" style="text-decoration: line-through;">Project kickoff meeting</div>
+              <div class="kanban-card-footer">
+                <span style="font-size: 0.75rem; color: var(--gray-400);">Completed Nov 25</span>
+                <div class="avatar" style="width: 24px; height: 24px; font-size: 0.65rem;">JD</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add Column -->
+          <div class="column-add-btn">
+            + Add Column
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Wireframe Navigation -->
+  <nav class="wireframe-nav">
+    <a href="index.html">Dashboard</a>
+    <a href="gantt.html">Gantt</a>
+    <a href="kanban.html" class="active">Kanban</a>
+    <a href="calendar.html">Calendar</a>
+    <a href="mobile.html">Mobile</a>
+  </nav>
+</body>
+</html>

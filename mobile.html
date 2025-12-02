@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Views - Project Manager</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background: var(--gray-200);
+    }
+    .mobile-showcase {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 40px;
+      min-height: 100vh;
+    }
+    .phone-frame {
+      width: 375px;
+      height: 812px;
+      background: #1a1a1a;
+      border-radius: 50px;
+      padding: 20px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+    }
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      background: var(--gray-100);
+      border-radius: 35px;
+      overflow: hidden;
+      position: relative;
+    }
+    .phone-notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 30px;
+      background: #1a1a1a;
+      border-radius: 0 0 20px 20px;
+      z-index: 10;
+    }
+    .mobile-header {
+      background: var(--primary);
+      color: white;
+      padding: 50px 20px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .mobile-header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .mobile-menu-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+    .mobile-menu-btn span {
+      display: block;
+      height: 2px;
+      background: white;
+      border-radius: 1px;
+    }
+    .mobile-content {
+      padding: 16px;
+      height: calc(100% - 180px);
+      overflow-y: auto;
+    }
+    .mobile-stat-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .mobile-stat {
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .mobile-stat-label {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+    .mobile-stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+    .mobile-section-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin: 20px 0 12px;
+      color: var(--gray-700);
+    }
+    .mobile-task-card {
+      background: white;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .mobile-task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .mobile-task-title {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .mobile-task-meta {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+      margin-top: 4px;
+    }
+    .mobile-task-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .mobile-tab-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0 30px;
+      border-top: 1px solid var(--gray-200);
+    }
+    .mobile-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      color: var(--gray-400);
+      cursor: pointer;
+    }
+    .mobile-tab.active {
+      color: var(--primary);
+    }
+    .mobile-tab-icon {
+      font-size: 1.25rem;
+    }
+    .showcase-label {
+      text-align: center;
+      margin-top: 16px;
+      font-weight: 600;
+      color: var(--gray-600);
+    }
+    /* Kanban mobile */
+    .mobile-kanban-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+    }
+    .mobile-kanban-tab {
+      padding: 8px 16px;
+      background: white;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      border: 1px solid var(--gray-200);
+    }
+    .mobile-kanban-tab.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    /* Gantt mobile */
+    .mobile-gantt-row {
+      display: flex;
+      align-items: center;
+      background: white;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .mobile-gantt-info {
+      width: 120px;
+      flex-shrink: 0;
+    }
+    .mobile-gantt-bar-container {
+      flex: 1;
+      height: 20px;
+      background: var(--gray-100);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+    .mobile-gantt-bar {
+      position: absolute;
+      height: 100%;
+      border-radius: 4px;
+    }
+    .fab {
+      position: absolute;
+      bottom: 100px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="mobile-showcase">
+    <!-- Phone 1: Dashboard -->
+    <div>
+      <div class="phone-frame">
+        <div class="phone-screen">
+          <div class="phone-notch"></div>
+          <div class="mobile-header">
+            <div class="mobile-menu-btn">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <h1>Dashboard</h1>
+            <div class="avatar" style="width: 32px; height: 32px; font-size: 0.75rem;">JD</div>
+          </div>
+          <div class="mobile-content">
+            <div class="mobile-stat-row">
+              <div class="mobile-stat">
+                <div class="mobile-stat-label">Total Tasks</div>
+                <div class="mobile-stat-value">48</div>
+              </div>
+              <div class="mobile-stat">
+                <div class="mobile-stat-label">In Progress</div>
+                <div class="mobile-stat-value" style="color: var(--warning);">12</div>
+              </div>
+            </div>
+            <div class="mobile-stat-row">
+              <div class="mobile-stat">
+                <div class="mobile-stat-label">Completed</div>
+                <div class="mobile-stat-value" style="color: var(--success);">31</div>
+              </div>
+              <div class="mobile-stat">
+                <div class="mobile-stat-label">Overdue</div>
+                <div class="mobile-stat-value" style="color: var(--danger);">5</div>
+              </div>
+            </div>
+
+            <div class="mobile-section-title">Today's Tasks</div>
+            <div class="mobile-task-card">
+              <div class="mobile-task-header">
+                <div>
+                  <div class="mobile-task-title">Review homepage wireframes</div>
+                  <div class="mobile-task-meta">Website Redesign</div>
+                </div>
+                <span class="task-priority priority-high" style="font-size: 0.65rem;">High</span>
+              </div>
+              <div class="mobile-task-footer">
+                <span style="font-size: 0.75rem; color: var(--danger);">Due today</span>
+                <div class="avatar" style="width: 24px; height: 24px; font-size: 0.6rem;">SK</div>
+              </div>
+            </div>
+            <div class="mobile-task-card">
+              <div class="mobile-task-header">
+                <div>
+                  <div class="mobile-task-title">Update API documentation</div>
+                  <div class="mobile-task-meta">Mobile App</div>
+                </div>
+                <span class="task-priority priority-medium" style="font-size: 0.65rem;">Med</span>
+              </div>
+              <div class="mobile-task-footer">
+                <span style="font-size: 0.75rem; color: var(--gray-500);">Due tomorrow</span>
+                <div class="avatar" style="width: 24px; height: 24px; font-size: 0.6rem;">JD</div>
+              </div>
+            </div>
+            <div class="mobile-task-card">
+              <div class="mobile-task-header">
+                <div>
+                  <div class="mobile-task-title">Prepare Q4 report</div>
+                  <div class="mobile-task-meta">Marketing</div>
+                </div>
+                <span class="task-priority priority-low" style="font-size: 0.65rem;">Low</span>
+              </div>
+              <div class="mobile-task-footer">
+                <span style="font-size: 0.75rem; color: var(--gray-500);">Due Dec 5</span>
+                <div class="avatar" style="width: 24px; height: 24px; font-size: 0.6rem;">AM</div>
+              </div>
+            </div>
+          </div>
+          <div class="fab">+</div>
+          <div class="mobile-tab-bar">
+            <div class="mobile-tab active">
+              <span class="mobile-tab-icon">&#9632;</span>
+              Home
+            </div>
+            <div class="mobile-tab">
+              <span class="mobile-tab-icon">&#9733;</span>
+              Tasks
+            </div>
+            <div class="mobile-tab">
+              <span class="mobile-tab-icon">&#128197;</span>
+              Calendar
+            </div>
+            <div class="mobile-tab">
+              <span class="mobile-tab-icon">&#128101;</span>
+              Team
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="showcase-label">Dashboard View</div>
+    </div>
+
+    <!-- Phone 2: Kanban -->
+    <div>
+      <div class="phone-frame">
+        <div class="phone-screen">
+          <div class="phone-notch"></div>
+          <div class="mobile-header">
+            <span style="font-size: 1.25rem; cursor: pointer;">&lt;</span>
+            <h1>Website Redesign</h1>
+            <span style="font-size: 1.25rem; cursor: pointer;">&#8943;</span>
+          </div>
+          <div class="mobile-content">
+            <div class="mobile-kanban-tabs">
+              <div class="mobile-kanban-tab">Backlog (8)</div>
+              <div class="mobile-kanban-tab">To Do (4)</div>
+              <div class="mobile-kanban-tab active">In Progress (3)</div>
+              <div class="mobile-kanban-tab">Review (2)</div>
+              <div class="mobile-kanban-tab">Done (12)</div>
+            </div>
+
+            <div class="mobile-task-card" style="border-left: 3px solid var(--warning);">
+              <div class="mobile-task-header">
+                <div>
+                  <div class="mobile-task-title">UI Design - Hero Section</div>
+                  <div class="mobile-task-meta">High-fidelity mockups for landing</div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 6px; margin: 8px 0;">
+                <span class="tag" style="font-size: 0.65rem;">Design</span>
+                <span class="tag" style="font-size: 0.65rem; background: #FEE2E2; color: var(--danger);">Blocked</span>
+              </div>
+              <div class="mobile-task-footer">
+                <span class="task-priority priority-high" style="font-size: 0.65rem;">High</span>
+                <div style="display: flex;">
+                  <div class="avatar" style="width: 24px; height: 24px; font-size: 0.6rem;">SK</div>
+                  <div class="avatar" style="width: 24px; height: 24px; font-size: 0.6rem; margin-left: -8px; background: var(--success);">JD</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mobile-task-card" style="border-left: 3px solid var(--warning);">
+              <div class="mobile-task-header">
+                <div>
+                  <div class="mobile-task-title">Component library setup</div>
+                  <div class="mobile-task-meta">React component system</div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 6px; margin: 8px 0;">
+                <span class="tag" style="font-size: 0.65rem;">Dev</span>
+              </div>
+              <div class="mobile-task-footer">
+                <span class="task-priority priority-medium" style="font-size: 0.65rem;">Med</span>
+                <div class="avatar" style="width: 24px; height: 24px; font-size: 0.6rem;">JD</div>
+              </div>
+            </div>
+
+            <div class="mobile-task-card" style="border-left: 3px solid var(--warning);">
+              <div class="mobile-task-header">
+                <div>
+                  <div class="mobile-task-title">Competitor analysis report</div>
+                  <div class="mobile-task-meta">Market research document</div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 6px; margin: 8px 0;">
+                <span class="tag" style="font-size: 0.65rem;">Research</span>
+              </div>
+              <div class="mobile-task-footer">
+                <span class="task-priority priority-low" style="font-size: 0.65rem;">Low</span>
+                <div class="avatar" style="width: 24px; height: 24px; font-size: 0.6rem;">AM</div>
+              </div>
+            </div>
+          </div>
+          <div class="fab">+</div>
+          <div class="mobile-tab-bar">
+            <div class="mobile-tab">
+              <span class="mobile-tab-icon">&#9632;</span>
+              Home
+            </div>
+            <div class="mobile-tab active">
+              <span class="mobile-tab-icon">&#9733;</span>
+              Tasks
+            </div>
+            <div class="mobile-tab">
+              <span class="mobile-tab-icon">&#128197;</span>
+              Calendar
+            </div>
+            <div class="mobile-tab">
+              <span class="mobile-tab-icon">&#128101;</span>
+              Team
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="showcase-label">Kanban Board (Swipeable)</div>
+    </div>
+
+    <!-- Phone 3: Gantt (simplified) -->
+    <div>
+      <div class="phone-frame">
+        <div class="phone-screen">
+          <div class="phone-notch"></div>
+          <div class="mobile-header">
+            <span style="font-size: 1.25rem; cursor: pointer;">&lt;</span>
+            <h1>Timeline</h1>
+            <span style="font-size: 0.85rem;">Dec 2024</span>
+          </div>
+          <div class="mobile-content">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 0.75rem; color: var(--gray-500);">
+              <span>Task</span>
+              <span>Nov 25 - Dec 14</span>
+            </div>
+
+            <div class="mobile-gantt-row">
+              <div class="mobile-gantt-info">
+                <div style="font-size: 0.8rem; font-weight: 500;">Research</div>
+                <div style="font-size: 0.7rem; color: var(--success);">Done</div>
+              </div>
+              <div class="mobile-gantt-bar-container">
+                <div class="mobile-gantt-bar" style="background: var(--success); left: 0%; width: 30%;"></div>
+              </div>
+            </div>
+
+            <div class="mobile-gantt-row">
+              <div class="mobile-gantt-info">
+                <div style="font-size: 0.8rem; font-weight: 500;">Wireframes</div>
+                <div style="font-size: 0.7rem; color: var(--success);">Done</div>
+              </div>
+              <div class="mobile-gantt-bar-container">
+                <div class="mobile-gantt-bar" style="background: var(--success); left: 20%; width: 20%;"></div>
+              </div>
+            </div>
+
+            <div class="mobile-gantt-row">
+              <div class="mobile-gantt-info">
+                <div style="font-size: 0.8rem; font-weight: 500;">UI Design</div>
+                <div style="font-size: 0.7rem; color: var(--warning);">In Progress</div>
+              </div>
+              <div class="mobile-gantt-bar-container">
+                <div class="mobile-gantt-bar" style="background: var(--warning); left: 35%; width: 25%;"></div>
+                <!-- Today marker -->
+                <div style="position: absolute; left: 45%; top: -4px; bottom: -4px; width: 2px; background: var(--danger);"></div>
+              </div>
+            </div>
+
+            <div class="mobile-gantt-row">
+              <div class="mobile-gantt-info">
+                <div style="font-size: 0.8rem; font-weight: 500;">Design Review</div>
+                <div style="font-size: 0.7rem; color: var(--gray-400);">Waiting</div>
+              </div>
+              <div class="mobile-gantt-bar-container">
+                <div class="mobile-gantt-bar" style="background: var(--gray-300); left: 55%; width: 15%;"></div>
+              </div>
+            </div>
+
+            <div class="mobile-gantt-row">
+              <div class="mobile-gantt-info">
+                <div style="font-size: 0.8rem; font-weight: 500;">Frontend Dev</div>
+                <div style="font-size: 0.7rem; color: var(--gray-400);">Not Started</div>
+              </div>
+              <div class="mobile-gantt-bar-container">
+                <div class="mobile-gantt-bar" style="background: var(--primary); left: 65%; width: 25%;"></div>
+              </div>
+            </div>
+
+            <div class="mobile-gantt-row">
+              <div class="mobile-gantt-info">
+                <div style="font-size: 0.8rem; font-weight: 500;">Testing</div>
+                <div style="font-size: 0.7rem; color: var(--gray-400);">Not Started</div>
+              </div>
+              <div class="mobile-gantt-bar-container">
+                <div class="mobile-gantt-bar" style="background: var(--primary); left: 80%; width: 20%;"></div>
+              </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 12px; background: #EEF2FF; border-radius: 8px; font-size: 0.8rem;">
+              <strong>Tip:</strong> Pinch to zoom, drag to scroll the timeline. Tap a bar to edit dates.
+            </div>
+          </div>
+          <div class="mobile-tab-bar">
+            <div class="mobile-tab">
+              <span class="mobile-tab-icon">&#9632;</span>
+              Home
+            </div>
+            <div class="mobile-tab">
+              <span class="mobile-tab-icon">&#9733;</span>
+              Tasks
+            </div>
+            <div class="mobile-tab active">
+              <span class="mobile-tab-icon">&#128197;</span>
+              Calendar
+            </div>
+            <div class="mobile-tab">
+              <span class="mobile-tab-icon">&#128101;</span>
+              Team
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="showcase-label">Gantt Timeline (Touch-friendly)</div>
+    </div>
+  </div>
+
+  <!-- Wireframe Navigation -->
+  <nav class="wireframe-nav">
+    <a href="index.html">Dashboard</a>
+    <a href="gantt.html">Gantt</a>
+    <a href="kanban.html">Kanban</a>
+    <a href="calendar.html">Calendar</a>
+    <a href="mobile.html" class="active">Mobile</a>
+  </nav>
+</body>
+</html>

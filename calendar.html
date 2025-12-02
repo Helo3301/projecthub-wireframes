@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar - Project Manager</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .calendar-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background: white;
+      border-radius: 12px 12px 0 0;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .calendar-nav {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .calendar-nav-btn {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--gray-300);
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .calendar-nav-btn:hover {
+      background: var(--gray-100);
+    }
+    .calendar-month-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .calendar-views {
+      display: flex;
+      gap: 4px;
+      background: var(--gray-100);
+      padding: 4px;
+      border-radius: 8px;
+    }
+    .calendar-view-btn {
+      padding: 6px 12px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    .calendar-view-btn.active {
+      background: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .calendar-container {
+      background: white;
+      border-radius: 0 0 12px 12px;
+      overflow: hidden;
+    }
+    .mini-calendar {
+      padding: 16px;
+      background: var(--gray-50);
+      border-radius: 8px;
+    }
+    .mini-calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .mini-calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      text-align: center;
+      font-size: 0.75rem;
+    }
+    .mini-day-header {
+      color: var(--gray-500);
+      padding: 4px;
+    }
+    .mini-day {
+      padding: 6px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .mini-day:hover {
+      background: var(--gray-200);
+    }
+    .mini-day.today {
+      background: var(--primary);
+      color: white;
+    }
+    .mini-day.has-event::after {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 4px;
+      background: var(--primary);
+      border-radius: 50%;
+      margin: 2px auto 0;
+    }
+    .mini-day.today.has-event::after {
+      background: white;
+    }
+    .upcoming-list {
+      margin-top: 20px;
+    }
+    .upcoming-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+    .upcoming-item {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .upcoming-date {
+      width: 40px;
+      text-align: center;
+    }
+    .upcoming-day {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .upcoming-month {
+      font-size: 0.7rem;
+      color: var(--gray-500);
+      text-transform: uppercase;
+    }
+    .calendar-event-detail {
+      padding: 6px 10px;
+      border-radius: 6px;
+      margin-bottom: 2px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .event-time {
+      font-size: 0.7rem;
+      color: inherit;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <h1>Project<span>Hub</span></h1>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Main</div>
+        <ul class="sidebar-nav">
+          <li><a href="index.html"><span class="icon">&#9632;</span> Dashboard</a></li>
+          <li><a href="#"><span class="icon">&#9733;</span> My Tasks</a></li>
+          <li><a href="calendar.html" class="active"><span class="icon">&#128197;</span> Calendar</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Projects</div>
+        <ul class="sidebar-nav">
+          <li><a href="gantt.html"><span class="icon">&#128193;</span> Website Redesign</a></li>
+          <li><a href="#"><span class="icon">&#128193;</span> Mobile App</a></li>
+          <li><a href="#"><span class="icon">&#128193;</span> Marketing Q4</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-section">
+        <div style="padding: 0 20px;">
+          <div class="mini-calendar">
+            <div class="mini-calendar-header">
+              <button style="background: none; border: none; cursor: pointer;">&lt;</button>
+              <span style="font-weight: 600; font-size: 0.85rem;">December 2024</span>
+              <button style="background: none; border: none; cursor: pointer;">&gt;</button>
+            </div>
+            <div class="mini-calendar-grid">
+              <div class="mini-day-header">S</div>
+              <div class="mini-day-header">M</div>
+              <div class="mini-day-header">T</div>
+              <div class="mini-day-header">W</div>
+              <div class="mini-day-header">T</div>
+              <div class="mini-day-header">F</div>
+              <div class="mini-day-header">S</div>
+              <div class="mini-day" style="color: var(--gray-400);">24</div>
+              <div class="mini-day" style="color: var(--gray-400);">25</div>
+              <div class="mini-day" style="color: var(--gray-400);">26</div>
+              <div class="mini-day" style="color: var(--gray-400);">27</div>
+              <div class="mini-day" style="color: var(--gray-400);">28</div>
+              <div class="mini-day" style="color: var(--gray-400);">29</div>
+              <div class="mini-day" style="color: var(--gray-400);">30</div>
+              <div class="mini-day today has-event">1</div>
+              <div class="mini-day">2</div>
+              <div class="mini-day has-event">3</div>
+              <div class="mini-day">4</div>
+              <div class="mini-day has-event">5</div>
+              <div class="mini-day">6</div>
+              <div class="mini-day">7</div>
+              <div class="mini-day">8</div>
+              <div class="mini-day">9</div>
+              <div class="mini-day has-event">10</div>
+              <div class="mini-day">11</div>
+              <div class="mini-day">12</div>
+              <div class="mini-day">13</div>
+              <div class="mini-day">14</div>
+            </div>
+          </div>
+
+          <div class="upcoming-list">
+            <div class="upcoming-title">Upcoming</div>
+            <div class="upcoming-item">
+              <div class="upcoming-date">
+                <div class="upcoming-day" style="color: var(--danger);">1</div>
+                <div class="upcoming-month">Dec</div>
+              </div>
+              <div>
+                <div style="font-size: 0.85rem; font-weight: 500;">Sprint Review</div>
+                <div style="font-size: 0.75rem; color: var(--gray-500);">Mobile App</div>
+              </div>
+            </div>
+            <div class="upcoming-item">
+              <div class="upcoming-date">
+                <div class="upcoming-day">3</div>
+                <div class="upcoming-month">Dec</div>
+              </div>
+              <div>
+                <div style="font-size: 0.85rem; font-weight: 500;">Design Handoff</div>
+                <div style="font-size: 0.75rem; color: var(--gray-500);">Website</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="top-header">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <h1 class="page-title">Calendar</h1>
+        </div>
+        <div class="header-actions">
+          <select style="padding: 8px 12px; border: 1px solid var(--gray-300); border-radius: 6px; font-size: 0.85rem;">
+            <option>All Projects</option>
+            <option>Website Redesign</option>
+            <option>Mobile App</option>
+            <option>Marketing Q4</option>
+          </select>
+          <button class="btn btn-primary">+ New Event</button>
+        </div>
+      </header>
+
+      <div class="content-area">
+        <div class="calendar-header-row">
+          <div class="calendar-nav">
+            <button class="calendar-nav-btn">&lt;</button>
+            <button class="calendar-nav-btn">&gt;</button>
+            <span class="calendar-month-title">December 2024</span>
+            <button class="btn btn-secondary" style="padding: 6px 12px;">Today</button>
+          </div>
+          <div class="calendar-views">
+            <button class="calendar-view-btn">Day</button>
+            <button class="calendar-view-btn">Week</button>
+            <button class="calendar-view-btn active">Month</button>
+          </div>
+        </div>
+
+        <div class="calendar-container">
+          <div class="calendar-grid">
+            <!-- Header -->
+            <div class="calendar-header-cell">Sun</div>
+            <div class="calendar-header-cell">Mon</div>
+            <div class="calendar-header-cell">Tue</div>
+            <div class="calendar-header-cell">Wed</div>
+            <div class="calendar-header-cell">Thu</div>
+            <div class="calendar-header-cell">Fri</div>
+            <div class="calendar-header-cell">Sat</div>
+
+            <!-- Week 1 (Nov 24-30) -->
+            <div class="calendar-cell other-month"><div class="calendar-date">24</div></div>
+            <div class="calendar-cell other-month"><div class="calendar-date">25</div></div>
+            <div class="calendar-cell other-month"><div class="calendar-date">26</div></div>
+            <div class="calendar-cell other-month"><div class="calendar-date">27</div></div>
+            <div class="calendar-cell other-month">
+              <div class="calendar-date">28</div>
+              <div class="calendar-event blue">Wireframes Due</div>
+            </div>
+            <div class="calendar-cell other-month"><div class="calendar-date">29</div></div>
+            <div class="calendar-cell other-month"><div class="calendar-date">30</div></div>
+
+            <!-- Week 2 (Dec 1-7) -->
+            <div class="calendar-cell">
+              <div class="calendar-date today">1</div>
+              <div class="calendar-event-detail" style="background: #FEE2E2; color: #991B1B;">
+                <span class="event-time">10:00</span> Sprint Review
+              </div>
+              <div class="calendar-event-detail" style="background: #DBEAFE; color: #1E40AF;">
+                <span class="event-time">14:00</span> Team Sync
+              </div>
+            </div>
+            <div class="calendar-cell">
+              <div class="calendar-date">2</div>
+              <div class="calendar-event-detail" style="background: #D1FAE5; color: #065F46;">
+                API Docs Due
+              </div>
+            </div>
+            <div class="calendar-cell">
+              <div class="calendar-date">3</div>
+              <div class="calendar-event-detail" style="background: #FEF3C7; color: #92400E;">
+                <span class="event-time">09:00</span> Design Handoff
+              </div>
+            </div>
+            <div class="calendar-cell"><div class="calendar-date">4</div></div>
+            <div class="calendar-cell">
+              <div class="calendar-date">5</div>
+              <div class="calendar-event-detail" style="background: #E0E7FF; color: #4338CA;">
+                Q4 Report Due
+              </div>
+            </div>
+            <div class="calendar-cell"><div class="calendar-date">6</div></div>
+            <div class="calendar-cell"><div class="calendar-date">7</div></div>
+
+            <!-- Week 3 (Dec 8-14) -->
+            <div class="calendar-cell"><div class="calendar-date">8</div></div>
+            <div class="calendar-cell">
+              <div class="calendar-date">9</div>
+              <div class="calendar-event-detail" style="background: #DBEAFE; color: #1E40AF;">
+                <span class="event-time">10:00</span> Planning
+              </div>
+            </div>
+            <div class="calendar-cell">
+              <div class="calendar-date">10</div>
+              <div class="calendar-event-detail" style="background: #D1FAE5; color: #065F46;">
+                Dev Sprint Start
+              </div>
+            </div>
+            <div class="calendar-cell"><div class="calendar-date">11</div></div>
+            <div class="calendar-cell"><div class="calendar-date">12</div></div>
+            <div class="calendar-cell">
+              <div class="calendar-date">13</div>
+              <div class="calendar-event-detail" style="background: #FEE2E2; color: #991B1B;">
+                Code Review
+              </div>
+            </div>
+            <div class="calendar-cell"><div class="calendar-date">14</div></div>
+
+            <!-- Week 4 (Dec 15-21) -->
+            <div class="calendar-cell"><div class="calendar-date">15</div></div>
+            <div class="calendar-cell"><div class="calendar-date">16</div></div>
+            <div class="calendar-cell"><div class="calendar-date">17</div></div>
+            <div class="calendar-cell"><div class="calendar-date">18</div></div>
+            <div class="calendar-cell"><div class="calendar-date">19</div></div>
+            <div class="calendar-cell">
+              <div class="calendar-date">20</div>
+              <div class="calendar-event-detail" style="background: #FEF3C7; color: #92400E;">
+                Beta Release
+              </div>
+            </div>
+            <div class="calendar-cell"><div class="calendar-date">21</div></div>
+
+            <!-- Week 5 (Dec 22-28) -->
+            <div class="calendar-cell"><div class="calendar-date">22</div></div>
+            <div class="calendar-cell"><div class="calendar-date">23</div></div>
+            <div class="calendar-cell" style="background: #FEF3C7;"><div class="calendar-date">24</div></div>
+            <div class="calendar-cell" style="background: #FEE2E2;"><div class="calendar-date">25</div></div>
+            <div class="calendar-cell"><div class="calendar-date">26</div></div>
+            <div class="calendar-cell"><div class="calendar-date">27</div></div>
+            <div class="calendar-cell"><div class="calendar-date">28</div></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Wireframe Navigation -->
+  <nav class="wireframe-nav">
+    <a href="index.html">Dashboard</a>
+    <a href="gantt.html">Gantt</a>
+    <a href="kanban.html">Kanban</a>
+    <a href="calendar.html" class="active">Calendar</a>
+    <a href="mobile.html">Mobile</a>
+  </nav>
+</body>
+</html>
